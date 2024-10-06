@@ -1,18 +1,20 @@
 package rw.auca.academics;
 
+import org.springframework.beans.factory.annotation.Autowired;  // Import this
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import rw.auca.academics.repository.UserRepository;
 import rw.auca.academics.model.User;
-
-
+import rw.auca.academics.service.UserService;  // Import your UserService
 
 @SpringBootApplication
 public class AcademicsApplication implements CommandLineRunner {
 
     private final UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;  // Add this line
 
     public AcademicsApplication(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -24,12 +26,13 @@ public class AcademicsApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        // Test the User registration with password encoding
         User user = new User();
-        user.setEmail("test@example.com");
-        user.setPassword("password");
-        userRepository.save(user);
+        user.setEmail("secure@example.com");
+        user.setPassword("plaintextpassword");
+        userService.registerUser(user);  // Use the UserService to register the user
 
-        System.out.println("User saved: " + userRepository.findByEmail("test@example.com").orElse(null));
+        // Print the registered user to confirm
+        System.out.println("User registered: " + userService.findByEmail("secure@example.com").orElse(null));
     }
 }
-
